@@ -4,19 +4,21 @@
 require_once("common/HTMLView.php");
 require_once("LogIn/src/controller/loginController.php");
 
-
-
-session_start();
-
+$htmlView = new HTMLView();
 $cont = new loginController();
-$htmlBody = $cont->displayLogin();
+$htmlBody = $cont->showLogin();
 
 
 $htmlView = new HTMLView();
 $htmlView->echoHTML($htmlBody);
 
 
+var_dump($cont -> getuserandpass());
+if($cont -> getuserandpass() == true){
+
+$htmlView->echoHTML($htmlBody);
 
 
 
+}
 

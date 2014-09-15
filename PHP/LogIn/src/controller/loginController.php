@@ -19,25 +19,47 @@ $this->view = new loginView($this->model);   // ($this->model) gör så att vi k
 
 
 
-
 //@return string HTML
-public function displayLogin(){
+public function showLogin(){
 
-return $this->view->showResults();
+return $this->view->showForm();
 
- //Hantera Indata
- //if($this->view->didUserLogIn()){
- //}
+}
+
+public function getTextfileInfo(){
+
+$this->model->getFileInfo();
+
 }
 
 
+/*public function getUsername(){
+
+$name = $this->view->getUserName();
+
+}
+
+public function getPassword(){
+
+$name = $this->view->getPassword();
+
+}*/
 
 
 
 
 
+public function getuserandpass(){
+
+$usrname = $this-> view-> getUsername();
+$password = $this-> view-> getPassword();
+
+return $this-> model -> checkUsrInput($usrname, $password);
+//anropa checkinput i model
 
 
+
+}
 
 
 
