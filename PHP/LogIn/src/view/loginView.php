@@ -14,59 +14,86 @@ $this->model = $model;
 }
 
 
+//Visas vid default läge
 public function showForm(){
 
+$ret = "";
 
-$ret = '<form action ="" method="post">
+if ($this -> getUserName() == true && $this -> getPassword() == true) {
+			
+			if ($this -> model -> isResUserLoggedin() == false) {
+			
+				$ret .= " * Felaktigt användarnamn och/eller lösenord";
+			}
+		}
 
+		if ($this -> usrPressLogin() == true) {
+			
+				if ($this -> usrNameTyped() == empty($_POST['username']) ){
+		
+			$ret .= " * Användarnamnet måste anges" ."<br>";
+
+
+		}
+	}
+		if ($this -> passwordTyped() == empty($_POST['password'])) {
+			
+			$ret .= " * Lösenordet måste anges";
+		}
+
+		
+		if (isset($_POST['submitout']) == true) {
+		
+			$ret .=" * Du är nu utloggad";
+		}
+		
+
+
+
+
+$res = "<form action ='' method='post'>
+$ret
 <h1>Ej inloggad</h1> <br/>
 <fieldset>
 <legend>Skriv in användarnamn och lösenord för att logga in</legend>
+
+
+
 <label>Username :</label>
-<input type="text" placeholder="Username" value="" name="username">
+<input type='text' placeholder='Username' value='' name='username'>
 
 <label>Password :</label>
-<input type="password" placeholder="Password" value="" name="password">
+<input type='password' placeholder='Password' value='' name='password'>
 
-<input type="checkbox" name="saveinfo" value="saveinfo"/>Håll mig inloggad
+<input type='checkbox' name='saveinfo' value='saveinfo'/>Håll mig inloggad
 
 <br/><br/>
 
-<input name="submit" type="submit" value=" Logga in ">
+<input name='submit' type='submit' value='Logga in'>
 
 </fieldset>
 
-</form>';
+</form>";
 
-return $ret;
+return $res;
 
 
 
 }
-//index
 
-//controller -> model -> view 
+public function ifUserPressLogin(){
 
-
-/*public function checkFields(){
-
-$res = '';
-if(empty($_POST['username']))
-    $res .= 'The username is required.<br>';
-if(empty($_POST['password']))
-    $res .= 'The password is required.<br>';  
-if(empty($_POST['username']) && empty($_POST['password']))
-    $res .= 'You need to enter username or password.<br>';
-echo $res;
-
-}*/
-/*public function didUserLogIn(){
-
-if (isset($_POST[logIn]))
-	return true;
+	if(isset($_POST['submit']) == true){
+		return true;
+	}
 return false;
+}
 
-}*/
+public function usrPressLogin(){
+
+return isset($_POST['submit']);
+
+}
 
 
 public function usrNameTyped(){
@@ -94,21 +121,6 @@ return false;
 
 
 }
-
-
-/*
-
-public function chkCheckBox(){
-
-if(isset($_POST["submit"]) == true){
-
-	return true;
-}
-return false;
-}
-*/
-
-
 
 
 
@@ -139,6 +151,21 @@ if($this->passwordTyped() == true){
 
 
 
+
+/*public function diduserpresskeep(){
+
+if(isset($_POST['saveinfo'])){
+
+	return true;
+}
+
+return false;
+}
+
+public function usrCheckedIT(){
+	return isset($_POST['saveinfo']);
+}
+*/
 
 
 

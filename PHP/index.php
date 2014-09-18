@@ -5,20 +5,46 @@ require_once("common/HTMLView.php");
 require_once("LogIn/src/controller/loginController.php");
 
 $htmlView = new HTMLView();
+$Loginmodel = new Loginmodel();
 $cont = new loginController();
-$htmlBody = $cont->showLogin();
+
+$htmlBody = $cont->showForm();
+//$htmlView -> echoHTML($htmlBody);
 
 
-$htmlView = new HTMLView();
-$htmlView->echoHTML($htmlBody);
 
+$showLoggedinView = $cont -> showLoggedin();
 
-var_dump($cont -> getuserandpass());
-if($cont -> getuserandpass() == true){
+//Hämtar nödvändig info innan presentation av inloggad status nedan
+$cont -> getTextfileInfo();
+$cont -> getuserandpass();
+if($cont -> isUserLoggedOut() == true){
 
-$htmlView->echoHTML($htmlBody);
+$htmlView -> echoHTML($htmlBody);
+}
 
+if($cont -> isUserLoggedIn() == true){
 
+$htmlView -> echoHTML($showLoggedinView);
 
 }
 
+else{
+$htmlView -> echoHTML($htmlBody);
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ 
