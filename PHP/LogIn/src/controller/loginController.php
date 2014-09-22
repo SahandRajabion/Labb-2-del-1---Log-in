@@ -10,83 +10,78 @@ class LoginController {
 private $view;
 private $model;
 private $loggedInView;
+private $test = false;
 
 public function __construct(){
+
 
 $this-> model = new loginModel();
 $this-> view = new loginView($this->model);   // ($this->model) gör så att vi kan använda värdet av model i LogInVIEW´n
 $this -> loggedInView = new loggedInView($this -> model);
+//var_dump($this->view->getCookiePassword());
 }
 
 
+public function displayshowForm(){
+	$this->checkUserLoggedOut();
+if($this-> view-> usrRemoveCookie()==  true){
+	 $this-> view-> showForm($this-> test);
+}
+if($this-> view-> userPressLogin() == true &&
+	$this-> model-> ifUserLoggedIn() == true ||
+		$this-> view -> isSetcookie() == true &&
+		$this-> model-> ifUserLoggedIn() == true){
+$this-> test;
+}
 
-//@return string HTML
-//Default läge
-public function showForm(){
-
-return $this-> view->showForm();
-
+else{
+	
+	$this-> test = $this-> setCookieIfuserchecked();
 }
 
 
-//Hämtar file data
-public function getTextfileInfo(){
-
-$this-> model->getFileInfo();
-
-}
-
-
-//Om användaren tryckt på logga in knappen = hämta input och kontrollera den
-public function userPressLogin(){
-
-	if($this -> view -> ifUserPressLogin()){
-
-		$this -> getuserandpass();
+if ($this-> model-> ifUserLoggedIn() == true) {
+    return $this->loggedInView->showLoggedinView($this->test);
 	}
+
+else{
+
+	return $this-> view->showForm($this->test);
+	}	
+
 }
 
+//Kollar om användaren tryckt på logga ut knappen i andra vyn vid redan inloggad status.
+public function checkUserLoggedOut(){  	
+  	if($this -> loggedInView -> ifUsrPressLogout() == true){
+     $this -> model -> loggingout();
+  	}
+  }
 
 //Hämtar input och kontrollerar den
-public function getuserandpass(){
-
-$username = $this-> view-> getUsername();
+public function getUsrAndPW(){
+$usrname = $this-> view-> getUsername();
 $password = $this-> view-> getPassword();
-
- $this-> model -> checkUserInput($username, $password);
-
+$cookieUser = $this-> view-> getCookieUsername();
+$cookiePass = $this-> view -> getCookiePassword();
+$timeStamp = time();
+//var_dump($this-> view -> getCookieUsername());
+//var_dump();
+return $this-> model -> checkInput($usrname, $password, $cookieUser, $cookiePass , $timeStamp);
+	
 }
 
+public function setCookieIfuserchecked(){
+	//var_dump($this-> getuserandpass() == true);
+	if($this-> getUsrAndPW() == true){
+		if ($this-> view -> userCheckedBox() == true){
 
+			$this-> view-> setCookieIfChecked();
+		}
+		return true;
+	}
 
-
-//Kollar om användaren blivit inloggad eller inte efter att kontrollen gått igenom
-public function isUserLoggedIn(){
-
-	return $this -> model -> isResUserLoggedin();
+	return false;
 }
-
-//När användare loggat in
-public function showLoggedin(){
-
-return $this-> loggedInView->showLoggedinView();
-
-}
-
-
-//Kollar om användaren tryckt på logga ut knappen i andra vyn vid redan inloggad status
-public function isUserLoggedOut(){
-  	
-  	if($this -> loggedInView -> ifUsrPressLogout() == true){
-
-     $this -> model -> loggingout();
-
-  	}
-
-
-
-}
-
-
 }
 
