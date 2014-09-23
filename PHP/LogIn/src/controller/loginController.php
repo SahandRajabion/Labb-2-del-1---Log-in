@@ -18,7 +18,7 @@ public function __construct(){
 $this-> model = new loginModel();
 $this-> view = new loginView($this->model);   // ($this->model) gör så att vi kan använda värdet av model i LogInVIEW´n
 $this -> loggedInView = new loggedInView($this -> model);
-//var_dump($this->view->getCookiePassword());
+
 }
 
 
@@ -65,14 +65,13 @@ $password = $this-> view-> getPassword();
 $cookieUser = $this-> view-> getCookieUsername();
 $cookiePass = $this-> view -> getCookiePassword();
 $timeStamp = time();
-//var_dump($this-> view -> getCookieUsername());
-//var_dump();
+
 return $this-> model -> checkInput($usrname, $password, $cookieUser, $cookiePass , $timeStamp);
 	
 }
 
 public function setCookieIfuserchecked(){
-	//var_dump($this-> getuserandpass() == true);
+
 	if($this-> getUsrAndPW() == true){
 		if ($this-> view -> userCheckedBox() == true){
 

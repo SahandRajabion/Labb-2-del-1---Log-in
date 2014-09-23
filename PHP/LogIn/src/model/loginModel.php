@@ -7,6 +7,10 @@ private $username;
 private $password;
 private $cookieFilePassword;
 private $cookieFileDate;
+private $data = "data.txt";
+private $cookieFile = "CookieFile.txt";
+private $cookieTimeFile = "CookieTimeFile.txt";
+private $session = "userlogg";
 
 
 public function __construct(){
@@ -14,13 +18,14 @@ public function __construct(){
 	$this -> getFileInfo();
 	$this->OpenCookieFileReadOnly();
 	$this->OpenCookieFileReadDateOnly();
+	
 }
 
 
 
 public function getFileInfo(){
-if (file_exists("data.txt")){
-	$dataFile = "data.txt";
+if (file_exists($this->data)){
+	$dataFile = $this->data;
 	$fileOpen = fopen($dataFile, "r");
 	$fileData = fread($fileOpen, 13);
 	$this -> username = substr($fileData, 0,5);
@@ -38,7 +43,7 @@ else {
 
 public function OpenCookieFileReadOnly(){
 	if ($this-> IfPwFileIsEmpty() > 0) {
-		$cookieFile = "CookieFile.txt";
+		$cookieFile = $this->cookieFile;
 		$open = fopen($cookieFile, "r");
 		$read = fread($open, filesize($cookieFile));
 		fclose($open);
@@ -49,7 +54,7 @@ public function OpenCookieFileReadOnly(){
 }
 
 public function IfPwFileIsEmpty(){
-		$filecheckPW = @file("CookieFile.txt");
+		$filecheckPW = @file($this->cookieFile);
 		if ($filecheckPW === false) {
 			return 0;
 		}
@@ -59,7 +64,7 @@ public function IfPwFileIsEmpty(){
 
 public function OpenCookieFileReadDateOnly(){
 	if ($this->IfDateFileisEmpty() > 0) {
-		$CookieTime = "CookieTimeFile.txt";
+		$CookieTime = $this->cookieTimeFile;
 		$open = fopen($CookieTime, "r");
 		$read = fread($open, filesize($CookieTime));
 		fclose($open);
@@ -69,7 +74,7 @@ public function OpenCookieFileReadDateOnly(){
 }
 
 	public function IfDateFileisEmpty(){
-		$fileCheckDate = @file("CookieTime.txt");
+		$fileCheckDate = @file($this->cookieTimeFile);
 		if ($fileCheckDate == false) {
 			return 0;
 		}
@@ -78,12 +83,12 @@ public function OpenCookieFileReadDateOnly(){
 
 
 public function cookieFileWrite($cookiePass , $timeStamp){
-		$cookieFiletxt = "CookieFile.txt";
+		$cookieFiletxt = $this->cookieFile;
 		$openCookieFiletxt = fopen($cookieFiletxt, "w");
 		$writeCrypto = fwrite($openCookieFiletxt, $cookiePass);
 		fclose($openCookieFiletxt);
 
-		$cookieTimeFile = "CookieTimeFile.txt";
+		$cookieTimeFile = $this->cookieTimeFile;
 		$openCookieTimeFile = fopen($cookieTimeFile, "w");
 		$writeTimeStamp = fwrite($openCookieTimeFile, $timeStamp);
 		fclose($openCookieTimeFile);
@@ -92,15 +97,12 @@ public function cookieFileWrite($cookiePass , $timeStamp){
 
 
 public function checkInput($usrname, $password, $cookieUser, $cookiePass, $timeStamp){
-	//$this ->  $passcrypto = $cookiePw;
-	//var_dump($this-> cookieFilePassword);
-	//var_dump($cookiePw);
-	//var_dump((int)$this->cookieFileDate);
+	
 	if(($usrname == $this -> username && $password == $this -> password) == true ||
  		$cookiePass == $this-> cookieFilePassword && $cookieUser == $this -> username && $timeStamp < (int)$this-> cookieFileDate  ) {
 
 	//inloggning lyckades skicka vidare
-		$_SESSION['userlogg'] = true;
+		$_SESSION[$this->session] = true;
 		return true;
 
 	}
@@ -111,7 +113,7 @@ public function checkInput($usrname, $password, $cookieUser, $cookiePass, $timeS
 
 //Retunerar true / false beroende på om användaren blivit inloggad efter kontrollen.
 public function ifUserLoggedIn(){
-	if(isset($_SESSION['userlogg']) == true){
+	if(isset($_SESSION[$this->session]) == true){
 		return true;
 	}
 
@@ -121,7 +123,7 @@ public function ifUserLoggedIn(){
 /*Efter att kollat om användaren tryckt på logga ut knappen i andra vyn
  kallas denna metoden för att logga ut användare och unsetta sessionen.*/
 public function loggingout(){
-	unset($_SESSION['userlogg']);
+	unset($_SESSION[$this->session]);
 }
 
 

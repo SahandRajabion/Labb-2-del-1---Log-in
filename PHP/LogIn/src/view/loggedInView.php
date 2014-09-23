@@ -4,6 +4,7 @@ class loggedInView{
 
  private $Model;
  private $View;
+ private $submitOut ="submitout";
  
 
 public function __construct(loginModel $Model){
@@ -47,7 +48,7 @@ public function __construct(loginModel $Model){
  				 <h2>Admin är nu inloggad</h2>
  				 </br>
  				 </br><br>
- 				 <input type='submit' name='submitout' value='Logga ut'/>
+ 				 <input type='submit' name=".$this->submitOut." value='Logga ut'/>
  				 </br><br><br>
  				 </form>";
  
@@ -59,7 +60,7 @@ public function __construct(loginModel $Model){
 
  	public function ifUsrPressLogout(){
  	
-	 	if (isset($_POST['submitout']) == true) {
+	 	if (isset($_POST[$this->submitOut]) == true) {
  		
  			return true;
  		

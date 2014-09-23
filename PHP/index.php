@@ -9,20 +9,8 @@ $Loginmodel = new Loginmodel();
 $cont = new loginController();
 
 $htmlBody = $cont->displayshowForm();
-//$htmlView -> echoHTML($htmlBody);
-
-
-
-//$showLoggedinView = $cont -> showLoggedin();
-
-//Hämtar nödvändig info innan presentation av inloggad status nedan
 
 $htmlView -> echoHTML($htmlBody);
-
-
-
-
-
 
 //LC_ALL = All of the below in swedish.
 setlocale(LC_ALL, 'swedish');

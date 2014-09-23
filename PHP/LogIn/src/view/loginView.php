@@ -5,23 +5,28 @@ class loginView{
 
 
 private $model;
-
+private $session = "userlogg";
+private $user ="username";
+private $pass ="password";
+private $saveCookie = "saveinfo";
+private $submit = "submit";
+private $setCookieUser ="view::username";
+private $setCookiePW ="view::password";
+private $submitOut ="submitout";
 
 
 public function __construct(loginModel $model){
 
 $this-> model = $model;
-//var_dump($this-> checkCookiePW());
-//var_dump($this-> checkCookieUsr());
-//var_dump($this->getCookieUsername());
-//var_dump($this->getCookiePassword());
+
+
 }
 
 
 
 public function usrNameTyped(){
 
-if(isset($_POST["username"]) == true){
+if(isset($_POST[$this->user]) == true){
 
 	return true;
 
@@ -31,7 +36,7 @@ return false;
 
 public function passwordTyped(){
 
-if(isset($_POST["password"]) == true){
+if(isset($_POST[$this->pass]) == true){
 
 	return true;
 }
@@ -42,7 +47,7 @@ public function getUserName(){
 
 if($this->usrNameTyped() == true){
 
-	return htmlentities($_POST["username"]);
+	return htmlentities($_POST[$this->user]);
 }
 }
 
@@ -50,18 +55,18 @@ public function getPassword(){
 
 if($this->passwordTyped() == true){
 
-	return htmlentities($_POST["password"]);
+	return htmlentities($_POST[$this->pass]);
 }
 }
 
 public function userCheckedBox(){
-	return isset($_POST['saveinfo']);
+	return isset($_POST[$this->saveCookie]);
 }
 
 
 public function userPressLogin(){
 
-	if(isset($_POST['submit']) == true){
+	if(isset($_POST[$this->submit]) == true){
 		return true;
 	}
 return false;
@@ -69,7 +74,7 @@ return false;
 
 public function ifUserPressLogin(){
 
-return isset($_POST['submit']);
+return isset($_POST[$this->submit]);
 
 }
 
@@ -92,7 +97,7 @@ if ($this -> getUserName() == true && $this -> getPassword() == true) {
 // Ifall usrname fältet står tomt efter submit
 		if ($this -> ifUserPressLogin() == true) {
 			
-				if ($this -> usrNameTyped() == empty($_POST['username']) ){
+				if ($this -> usrNameTyped() == empty($_POST[$this->user]) ){
 			$ret .= " * Användarnamnet måste anges" ."<br>";
 
 
@@ -100,13 +105,13 @@ if ($this -> getUserName() == true && $this -> getPassword() == true) {
 	}
 
 //Ifall password fältet står tomt efter submit
-		if ($this -> passwordTyped() == empty($_POST['password'])) {
+		if ($this -> passwordTyped() == empty($_POST[$this->pass])) {
 			$ret .= " * Lösenordet måste anges";
 		}
 
 		
 //Ifall användare tryckt logga ut
-		if (isset($_POST['submitout']) == true) {
+		if (isset($_POST[$this->submitOut]) == true) {
 		
 			$ret .=" * Du är nu utloggad";
 		}
@@ -115,8 +120,9 @@ if ($this -> getUserName() == true && $this -> getPassword() == true) {
 			if ($this-> isSetcookie() == true && $test == false) {
 
 			$ret .= "Fel cookie information";
-				//setcookie('view::username', "" , time() -1);
-				//setcookie('view::password', "" , time() -1);
+			//ifall att cookies ändras i browsern så rensas dem och felmeddelande kommer fram
+				setcookie($this->setCookieUser, "" , time() -1);
+				setcookie($this->setCookiePW, "" , time() -1);
 		}
 	}
 		
@@ -130,16 +136,16 @@ $ret
 
 
 <label>Username :</label>
-<input type='text' placeholder='Username' value='' name='username'>
+<input type='text' placeholder='Username' value='' name=".$this->user.">
 
 <label>Password :</label>
-<input type='password' placeholder='Password' value='' name='password'>
+<input type='password' placeholder='Password' value='' name=".$this->pass.">
 
-<input type='checkbox' name='saveinfo' value='saveinfo'/>Håll mig inloggad
+<input type='checkbox' name=".$this->saveCookie." value='saveinfo'/>Håll mig inloggad
 
 <br/><br/>
 
-<input name='submit' type='submit' value='Logga in'>
+<input name=".$this->submit." type='submit' value='Logga in'>
 
 </fieldset>
 
@@ -150,7 +156,7 @@ return $res;
 }
 
 
-public function getCryptPW(){
+	public function getCryptPW(){
  		return crypt(md5($this->getPassword()));	
  	}
 
@@ -161,33 +167,28 @@ public function getCryptPW(){
 
 
 
-public function setCookieIfChecked(){
-//var_dump(isset($_POST['saveinfo']));
-//var_dump($this->getCookiePassword());
-	//var_dump($this->checkCookiePW());
-	//var_dump($this->getP());
+	public function setCookieIfChecked(){
 
-				//var_dump($cookiePass);
-	    if (isset($_POST['saveinfo']) == true) {
+	    if (isset($_POST[$this->saveCookie]) == true) {
 	    	$timeStamp = $this-> getCookieTimeStamp();
 	   	    $cookieUser = $this-> getUserName();
 		    $cookiePass = $this-> getCryptPW();		
 					
-			setcookie('view::username' , $cookieUser, $timeStamp);
-		 	setcookie('view::password' , $cookiePass, $timeStamp);
+			setcookie($this->setCookieUser , $cookieUser, $timeStamp);
+		 	setcookie($this->setCookiePW , $cookiePass, $timeStamp);
 
 		 	$this-> model-> cookieFileWrite($cookiePass, $timeStamp);	
 		  	return true;
 		}
 			return false;
 	}
-public function usrRemoveCookie(){
+	public function usrRemoveCookie(){
 			
 			if ($this-> isSetcookie() == true) {
-			if (isset($_POST['submitout']) == true) {
-				setcookie('view::username', "" , time() -1);
-				setcookie('view::password' , "" , time() -1);
-				unset($_SESSION['userlogg']);
+			if (isset($_POST[$this->submitOut]) == true) {
+				setcookie($this->setCookieUser, "" , time() -1);
+				setcookie($this->setCookiePW , "" , time() -1);
+				unset($_SESSION[$this->session]);
 				return true;
 				}
 				return false;
@@ -195,8 +196,9 @@ public function usrRemoveCookie(){
 
 
 }
+
 	public function isSetcookie(){
-		if(isset($_COOKIE['view::username']) && isset($_COOKIE['view::password'])){
+		if(isset($_COOKIE[$this->setCookieUser]) && isset($_COOKIE[$this->setCookiePW])){
 
 			return true;
 		}
@@ -208,14 +210,14 @@ public function usrRemoveCookie(){
 	public function getCookiePassword(){
 		if ($this-> isSetcookie() == true) {
 			# code...
-			return $_COOKIE['view::password'];
+			return $_COOKIE[$this->setCookiePW];
 		}
 	}
 
 	public function getCookieUsername(){
 		if ($this-> isSetcookie() == true) {
 			# code...
-			return $_COOKIE['view::username'];
+			return $_COOKIE[$this->setCookieUser];
 		}
 	}
 
