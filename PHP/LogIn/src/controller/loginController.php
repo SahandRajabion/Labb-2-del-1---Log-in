@@ -40,7 +40,7 @@ else{
 }
 
 
-if ($this-> model-> ifUserLoggedIn() == true) {
+if ($this-> model-> ifUserLoggedIn() == true && $this->model->checkCurrentSession($this->view->checkSession()) ==true) {
     return $this->loggedInView->showLoggedinView($this->test);
 	}
 
@@ -55,6 +55,7 @@ else{
 public function checkUserLoggedOut(){  	
   	if($this -> loggedInView -> ifUsrPressLogout() == true){
      $this -> model -> loggingout();
+
   	}
   }
 
@@ -64,9 +65,10 @@ $usrname = $this-> view-> getUsername();
 $password = $this-> view-> getPassword();
 $cookieUser = $this-> view-> getCookieUsername();
 $cookiePass = $this-> view -> getCookiePassword();
+$sessionData = $this-> view->checkSession();
 $timeStamp = time();
 
-return $this-> model -> checkInput($usrname, $password, $cookieUser, $cookiePass , $timeStamp);
+return $this-> model -> checkInput($usrname, $password, $cookieUser, $cookiePass , $timeStamp, $sessionData);
 	
 }
 

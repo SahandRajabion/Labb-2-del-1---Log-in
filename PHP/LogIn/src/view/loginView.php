@@ -172,10 +172,10 @@ return $res;
 	    if (isset($_POST[$this->saveCookie]) == true) {
 	    	$timeStamp = $this-> getCookieTimeStamp();
 	   	    $cookieUser = $this-> getUserName();
-		    $cookiePass = $this-> getCryptPW();		
+		    $cookiePass = $this-> getCryptPW();	
 					
-			setcookie($this->setCookieUser , $cookieUser, $timeStamp);
-		 	setcookie($this->setCookiePW , $cookiePass, $timeStamp);
+			setcookie($this->setCookieUser , $cookieUser, $timeStamp );
+		 	setcookie($this->setCookiePW , $cookiePass, $timeStamp );
 
 		 	$this-> model-> cookieFileWrite($cookiePass, $timeStamp);	
 		  	return true;
@@ -221,9 +221,18 @@ return $res;
 		}
 	}
 
-
-
+//Motverka SessionHiJacking
+Public function checkSession(){
+	return $_SERVER["HTTP_USER_AGENT"];
+}
 
 }
+
+
+
+
+
+
+
 		
 

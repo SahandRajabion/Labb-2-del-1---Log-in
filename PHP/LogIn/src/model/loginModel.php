@@ -15,11 +15,14 @@ private $session = "userlogg";
 
 public function __construct(){
     @session_start();
-	$this -> getFileInfo();
+	$this ->getFileInfo();
 	$this->OpenCookieFileReadOnly();
 	$this->OpenCookieFileReadDateOnly();
-	
+//	$this->cookieFilePassword = $_SERVER["HTTP_USER_AGENT"];
 }
+
+
+
 
 
 
@@ -96,13 +99,13 @@ public function cookieFileWrite($cookiePass , $timeStamp){
 }
 
 
-public function checkInput($usrname, $password, $cookieUser, $cookiePass, $timeStamp){
+public function checkInput($usrname, $password, $cookieUser, $cookiePass, $timeStamp, $sessionData){
 	
-	if(($usrname == $this -> username && $password == $this -> password) == true ||
- 		$cookiePass == $this-> cookieFilePassword && $cookieUser == $this -> username && $timeStamp < (int)$this-> cookieFileDate  ) {
+	if(($usrname == $this -> username && $password == $this -> password) == true || 
+ 		$cookiePass == $this-> cookieFilePassword && $cookieUser == $this -> username && $timeStamp < (int)$this-> cookieFileDate) {
 
 	//inloggning lyckades skicka vidare
-		$_SESSION[$this->session] = true;
+		$_SESSION[$this->session] = $sessionData;
 		return true;
 
 	}
@@ -124,7 +127,17 @@ public function ifUserLoggedIn(){
  kallas denna metoden för att logga ut användare och unsetta sessionen.*/
 public function loggingout(){
 	unset($_SESSION[$this->session]);
+
 }
+
+
+//Kollar om nuvarande session i webbläsaren är den samma. 
+public function checkCurrentSession($checkCurrentSession) {
+		if ($checkCurrentSession == $_SESSION[$this->session]) {
+			return true;
+		}
+		return false;
+	}
 
 
 
